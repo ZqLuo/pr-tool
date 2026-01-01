@@ -55,27 +55,10 @@ const handleLinkClick = (url, index) => {
 const handleRowAction = (action) => {
   if (selectedRowIndex.value === -1) return
   
-  if (action === 'delete') {
-    // 删除行
-    excelData.value.splice(selectedRowIndex.value, 1)
-    // 更新状态映射
-    const newStatus = {}
-    Object.keys(rowStatus.value).forEach(key => {
-      const index = parseInt(key)
-      if (index < selectedRowIndex.value) {
-        newStatus[index] = rowStatus.value[key]
-      } else if (index > selectedRowIndex.value) {
-        newStatus[index - 1] = rowStatus.value[key]
-      }
-    })
-    rowStatus.value = newStatus
-    selectedRowIndex.value = -1
-    selectedUrl.value = ''
-  } else {
-    // 设置行状态
-    rowStatus.value[selectedRowIndex.value] = action
-  }
+  // 设置行状态，包括删除状态
+  rowStatus.value[selectedRowIndex.value] = action
 }
+
 
 // 判断是否为链接
 const isLink = (value) => {
@@ -87,6 +70,7 @@ const getRowClass = (index) => {
   const status = rowStatus.value[index]
   if (status === 'confirm') return 'row-confirm'
   if (status === 'pending') return 'row-pending'
+  if (status === 'delete') return 'row-delete'
   return ''
 }
 
@@ -98,7 +82,12 @@ const exportExcel = () => {
   }
   
   try {
-    const worksheet = XLSX.utils.json_to_sheet(excelData.value)
+    // 过滤掉标记为删除状态的行
+    const filteredData = excelData.value.filter((_, index) => {
+      return rowStatus.value[index] !== 'delete'
+    })
+    
+    const worksheet = XLSX.utils.json_to_sheet(filteredData)
     const workbook = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
     XLSX.writeFile(workbook, '导出结果.xlsx')
@@ -304,7 +293,7 @@ body {
 }
 
 .left-panel {
-  flex: 1;
+  flex: 2;
   background-color: #fff;
   margin: 1rem 1rem 1rem 0;
   border-radius: 8px;
@@ -446,6 +435,10 @@ body {
   background-color: #fef3c7;
 }
 
+.row-delete {
+  background-color: #fee2e2;
+}
+
 .excel-link {
   color: #3b82f6;
   text-decoration: none;
@@ -459,7 +452,7 @@ body {
 }
 
 .right-panel {
-  flex: 1;
+  flex: 3;
   background-color: #fff;
   margin: 1rem 0 1rem 0.5rem;
   border-radius: 8px;
