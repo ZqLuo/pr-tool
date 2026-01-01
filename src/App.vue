@@ -112,7 +112,7 @@ const exportExcel = () => {
 <template>
   <div class="app-container">
     <header class="header">
-      <h1>Excel内容展示</h1>
+      <h1>达人名单选择工具</h1>
       <div class="header-actions">
         <input 
           type="file" 
@@ -221,10 +221,18 @@ const exportExcel = () => {
   box-sizing: border-box;
 }
 
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background-color: #f5f7fa;
   color: #333;
+  margin: 0;
+  padding: 0;
 }
 
 .app-container {
@@ -241,6 +249,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
 }
 
 .header h1 {
@@ -291,12 +300,13 @@ body {
   flex: 1;
   display: flex;
   overflow: hidden;
+  width: 100%;
 }
 
 .left-panel {
   flex: 1;
   background-color: #fff;
-  margin: 1rem;
+  margin: 1rem 1rem 1rem 0;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: auto;
@@ -329,7 +339,6 @@ body {
   z-index: 20;
   backdrop-filter: blur(4px);
   background-color: rgba(249, 250, 251, 0.95);
-  width: fit-content;
   min-width: 100%;
 }
 
@@ -337,6 +346,7 @@ body {
 .table-container {
   overflow-x: auto;
   border-radius: 4px;
+  width: 100%;
 }
 
 .action-options h3 {
@@ -449,14 +459,15 @@ body {
 }
 
 .right-panel {
-  width: 50%;
+  flex: 1;
   background-color: #fff;
-  margin: 1rem 1rem 1rem 0;
+  margin: 1rem 0 1rem 0.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .preview-empty {
