@@ -59,6 +59,13 @@ const handleRowAction = (action) => {
   rowStatus.value[selectedRowIndex.value] = action
 }
 
+// 在新标签页打开链接
+const openInNewTab = () => {
+  if (selectedUrl.value) {
+    window.open(selectedUrl.value, '_blank')
+  }
+}
+
 
 // 判断是否为链接
 const isLink = (value) => {
@@ -120,8 +127,24 @@ const exportExcel = () => {
     </header>
     
     <main class="main-content">
-      <!-- 左侧Excel表格 -->
+      <!-- 左侧网页预览 -->
       <div class="left-panel">
+        <div v-if="!selectedUrl" class="preview-empty">
+          <p>点击右侧表格中的链接查看网页内容</p>
+        </div>
+        <iframe 
+          v-else 
+          :src="selectedUrl" 
+          class="web-preview"
+          title="网页预览"
+          allow="autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; microphone; midi; payment; picture-in-picture; sync-xhr"
+          referrerpolicy="no-referrer-when-downgrade"
+          loading="lazy"
+        ></iframe>
+      </div>
+      
+      <!-- 右侧Excel表格 -->
+      <div class="right-panel">
         <div v-if="loading" class="loading">加载中...</div>
         <div v-else-if="excelData.length === 0" class="empty-state">
           <p>请选择一个Excel文件</p>
@@ -148,6 +171,12 @@ const exportExcel = () => {
                 class="action-btn pending-btn"
               >
                 待定
+              </button>
+              <button 
+                @click="openInNewTab"
+                class="action-btn open-btn"
+              >
+                在新标签页打开
               </button>
             </div>
           </div>
@@ -184,20 +213,6 @@ const exportExcel = () => {
             </table>
           </div>
         </div>
-      </div>
-      
-      <!-- 右侧网页预览 -->
-      <div class="right-panel">
-        <div v-if="!selectedUrl" class="preview-empty">
-          <p>点击左侧表格中的链接查看网页内容</p>
-        </div>
-        <iframe 
-          v-else 
-          :src="selectedUrl" 
-          class="web-preview"
-          title="网页预览"
-          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-        ></iframe>
       </div>
     </main>
   </div>
@@ -293,15 +308,15 @@ body {
 }
 
 .left-panel {
-  flex: 2;
+  flex: 3;
   background-color: #fff;
   margin: 1rem 1rem 1rem 0;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: auto;
-  padding: 1rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
-  position: relative;
 }
 
 .loading {
@@ -388,6 +403,15 @@ body {
   background-color: #d97706;
 }
 
+.open-btn {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.open-btn:hover {
+  background-color: #2563eb;
+}
+
 /* Excel表格样式 */
 .excel-table {
   min-width: 100%;
@@ -452,15 +476,15 @@ body {
 }
 
 .right-panel {
-  flex: 3;
+  flex: 2;
   background-color: #fff;
-  margin: 1rem 0 1rem 0.5rem;
+  margin: 1rem 0 1rem 1rem;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  overflow: auto;
+  padding: 1rem;
   min-width: 0;
+  position: relative;
 }
 
 .preview-empty {
