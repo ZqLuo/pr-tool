@@ -51,6 +51,20 @@ const handleLinkClick = (url, index) => {
   selectedRowIndex.value = index
 }
 
+// 自动在新标签页打开链接的选项
+const autoOpenNewTab = ref(false)
+
+// 处理链接点击并自动打开新标签页
+const handleLinkClickWithAutoOpen = (url, index) => {
+  selectedUrl.value = url
+  selectedRowIndex.value = index
+  
+  // 如果开启了自动在新标签页打开，则自动打开
+  if (autoOpenNewTab.value) {
+    openInNewTab()
+  }
+}
+
 // 处理行操作
 const handleRowAction = (action) => {
   if (selectedRowIndex.value === -1) return
@@ -196,6 +210,16 @@ const exportExcel = () => {
                 在新标签页打开
               </button>
             </div>
+            <!-- 自动打开新标签页选项 -->
+            <div class="auto-open-option">
+              <label>
+                <input 
+                  type="checkbox" 
+                  v-model="autoOpenNewTab"
+                >
+                自动在新标签页打开链接
+              </label>
+            </div>
           </div>
           
           <!-- 表格容器 -->
@@ -217,7 +241,7 @@ const exportExcel = () => {
                     <template v-if="isLink(row[col])">
                       <a 
                         href="#" 
-                        @click.prevent="handleLinkClick(row[col], index)"
+                        @click.prevent="handleLinkClickWithAutoOpen(row[col], index)"
                         class="excel-link"
                       >
                         {{ row[col] }}
@@ -427,6 +451,21 @@ body {
 
 .open-btn:hover {
   background-color: #2563eb;
+}
+
+/* 自动打开新标签页选项样式 */
+.auto-open-option {
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.auto-open-option input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
 }
 
 /* Excel表格样式 */
