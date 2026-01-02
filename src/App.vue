@@ -57,6 +57,23 @@ const handleRowAction = (action) => {
   
   // 设置行状态，包括删除状态
   rowStatus.value[selectedRowIndex.value] = action
+  
+  // 自动跳转下一行
+  const currentIndex = selectedRowIndex.value
+  if (currentIndex < excelData.value.length - 1) {
+    selectedRowIndex.value = currentIndex + 1
+    // 获取下一行的第一个链接
+    const nextRow = excelData.value[currentIndex + 1]
+    if (nextRow) {
+      // 查找下一行的第一个链接
+      for (const col of columns.value) {
+        if (isLink(nextRow[col])) {
+          selectedUrl.value = nextRow[col]
+          break
+        }
+      }
+    }
+  }
 }
 
 // 在新标签页打开链接
